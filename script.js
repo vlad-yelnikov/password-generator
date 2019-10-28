@@ -31,13 +31,12 @@ generateEl.addEventListener('click', () => {
 });
 
 function generatePassword(lower, upper, number, symbol, length) {
-    
-    //1. Init password variable
+    // Init password variable
     let generatedPassword = '';
 
     const typesCount = lower + upper + number + symbol;
 
-    //2. Filter out unchecked types
+    // Filter out unchecked types
     const typesArr = [{ lower }, { upper }, { number }, { symbol }].filter(
         item => Object.values(item)[0]
     );
@@ -46,21 +45,37 @@ function generatePassword(lower, upper, number, symbol, length) {
         return '';
     }
 
-    //3. Loop over length call generator function for each type
+    // Loop over length call generator function for each type
     for (let i = 0; i < length; i += typesCount) {
         typesArr.forEach(type => {
             const funcName = Object.keys(type)[0];
-            // console.log('funcName: ', funcName);
 
             generatedPassword += randomFunc[funcName]();
         });
     }
 
-    //4. Add final password to the password variable and return
+    // Add final password to the password variable and return
     const finalPassword = generatedPassword.slice(0, length);
 
     return finalPassword;
 }
+
+//copy password to clipboard
+clipboardEl.addEventListener('click', () => {
+    const textarea = document.createElement('textarea');
+    const password = resultEl.innerText;
+
+    if (!password) {
+        return;
+    }
+
+    textarea.value = password;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    textarea.remove();
+    alert('Password copied to clipboard');
+});
 
 function getRandomLower() {
     return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
